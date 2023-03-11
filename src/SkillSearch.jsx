@@ -1,48 +1,50 @@
 import React, { useState } from 'react';
 import './SkillSearch.css';
 
-let SKILLS = ['Java', 'React', 'HTML', 'AWS', 'Azure', 'DevOPS', 'JavaScript', 'TypeScript',"AccessData Certified Examiner",
-"Access Control",
-"Access Dimensions",
-"Access Gateway",
-"Access Lists",
-"Access Points",
-"Access to Justice",
-"Accident Investigation",
-"Accountants",
-"Accounting",
-"Accounts Payable",
-"Accounts Receivable",
-"Account Management",
-"Account Reconciliation",
-"Account Segmentation",
-"Accredited Buyer Rep",
-"Accredited Cruise Counselor",
-"Accretion",
-"Accruals"];
+let SKILLS = ['Java', 'React', 'HTML', 'AWS', 'Azure', 'DevOPS', 'JavaScript', 'TypeScript',"AccessData Certified Examiner", 'Active listening',
+'Adaptability',
+'Administration',
+'Advocacy',
+'Analysis',
+'Analytical',
+'Assertiveness',
+'Attention to detail'];
 
 function SkillSearch() {
   const [inputValue, setInputValue] = useState('');
   const [selectedSkills, setSelectedSkills] = useState([]);
+  const [inputWidth, setInputWidth] = useState(80); // add state for input width
 
   function handleInputChange(event) {
-    setInputValue(event.target.value);
+    const value = event.target.value;
+  
+    if (/^[a-zA-Z0-9]*$/.test(value)) { // check if value contains only letters and numbers
+      setInputValue(value);
+  
+      let factor = /[A-Z]/.test(value) && value.includes('W') ? 14.3 : (/[w]/.test(value) ? 12.3 : /[A-Z]/.test(value) && !value.includes('W') ? 11 : 8.9);
+  
+      setInputWidth(value.length * factor);
+  
+      if (value.length === 0) {
+        setInputWidth(80);
+      }
+    }
   }
 
   function handleSelectSkill(skill) {
     if (!selectedSkills.includes(skill)) {
       setSelectedSkills([...selectedSkills, skill]);
       setInputValue('');
+      setInputWidth(80);
     } else {
       setInputValue('');
+      setInputWidth(80);
     }
   }
 
   function handleDeleteSkill(skill) {
     setSelectedSkills(selectedSkills.filter((s) => s !== skill));
   }
-
-  const availableSkills = SKILLS.filter((skill) => !selectedSkills.includes(skill));
 
   function renderSkillChip(skill) {
     return (
@@ -67,6 +69,7 @@ function SkillSearch() {
           placeholder="Add skill"
           value={inputValue}
           onChange={handleInputChange}
+          style={{ width: inputWidth }}
         />
         {inputValue && (
           <div className="options-dropdown">
